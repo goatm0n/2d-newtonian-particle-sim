@@ -12,8 +12,7 @@ def simulate(particles: list[Particle], timestep: float) -> Generator[tuple[list
     time: float = 0
     while True:
         for particle in particles:
-            particle.x += particle.vel_x * timestep
-            particle.y += particle.vel_y * timestep
+            particle.update_position(particles, timestep)
         yield (particles, time)
         time += timestep
 
@@ -54,8 +53,8 @@ def live_plot_particle_sim(simulation: Generator[tuple[list[Particle], float], N
 
 def main() -> None:
     sun = Particle(SUN_MASS, 0, 0, 0, 0)
-    earth = Particle(EARTH_MASS, 0, 0, 1, 1)
-    particles: list[Particle]= [sun, earth]
+    earth = Particle(EARTH_MASS, 2, 2, 1, 1)
+    particles: list[Particle] = [sun, earth]
         
     tick = TICK
 
