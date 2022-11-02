@@ -64,10 +64,27 @@ class Particle:
     def gravitational_attraction(self, particle: 'Particle') -> tuple[float, float]:
         r = self.distance(particle)
         theta = math.atan2(self.y_distance(particle), self.x_distance(particle))
+        
+        # find direction of force and handle special case where r==0
+        if self.x < particle.x:
+            x_direction: float = 1
+        elif self.x > particle.x:
+            x_direction: float = -1
+        else:
+            x_direction: float = 0
+
+        if self.y < particle.y:
+            y_direction: float = 1
+        elif self.y > particle.y:
+            y_direction: float = -1
+        else:
+            y_direction: float = 0
+        
         # this line crashes if there is a collision, ie, if r==0
         force = G * self.mass * particle.mass * r**-2
-        force_x = math.cos(theta) * force
-        force_y = math.sin(theta) * force
+        force_x = math.cos(theta) * force * x_direction
+        force_y = math.sin(theta) * force * y_direction
+        
         return (force_x, force_y)
 
     def sum_gravitational_forces(self, particles: list['Particle']) -> tuple[float, float]:
@@ -95,7 +112,7 @@ class Particle:
         (ax, ay) = self.acceleration(particles)
         self.vel_x += ax * timestep
         self.vel_y += ay * timestep
-
+    
     def update_position(self, particles: list['Particle'], timestep: float) -> None:
         self.update_velocity(particles, timestep)
         self.x += self.vel_x * timestep
